@@ -1,4 +1,4 @@
-const BACKEND_URL = 'https://nexus-chat-production-527c.up.railway.app'
+const BACKEND_URL = 'https://nexus-chat-mrtp.onrender.com'
 
 let ws = null
 let reconnectTimer = null

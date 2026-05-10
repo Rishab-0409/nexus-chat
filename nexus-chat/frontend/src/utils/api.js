@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const BACKEND_URL = 'https://nexus-chat-production-527c.up.railway.app'
+const BACKEND_URL = 'https://nexus-chat-mrtp.onrender.com'
 
 const api = axios.create({ baseURL: `${BACKEND_URL}/api` })
 
