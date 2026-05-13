@@ -6,8 +6,8 @@ import btManager from '../utils/bluetooth'
 
 export default function SOSButton() {
   const { sendSOS, user, networkMode } = useStore()
-  const [open, setOpen]       = useState(false)
-  const [message, setMessage] = useState('EMERGENCY — I need immediate help!')
+  const [open, setOpen]         = useState(false)
+  const [message, setMessage]   = useState('EMERGENCY — I need immediate help!')
   const [locating, setLocating] = useState(false)
   const [location, setLocation] = useState(null)
   const [sending, setSending]   = useState(false)
@@ -29,22 +29,17 @@ export default function SOSButton() {
   const handleSOS = async () => {
     if (sending) return
     setSending(true)
-    // 3-second countdown so accidental taps can be cancelled
     for (let i = 3; i > 0; i--) {
       setCountdown(i)
       await new Promise(r => setTimeout(r, 1000))
     }
     setCountdown(0)
-
     try {
-      // Internet broadcast
       await sendSOS(message, location)
-      // Bluetooth broadcast for offline coverage
       await btManager.sendSOS(user?.id, user?.username, message, location)
       toast.success('🚨 SOS broadcast sent to all users!', { duration: 6000 })
       setOpen(false)
     } catch (e) {
-      // If internet fails, still broadcast via BT
       try {
         await btManager.sendSOS(user?.id, user?.username, message, location)
         toast('🔵 SOS sent via Bluetooth', { icon: '📡', duration: 6000 })
@@ -66,7 +61,7 @@ export default function SOSButton() {
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
           <div className="w-full max-w-md glass border border-red-500/30 rounded-2xl overflow-hidden shadow-2xl shadow-red-500/20">
             {/* Header */}
             <div className="bg-red-600 px-5 py-4 flex items-center justify-between">
@@ -125,7 +120,6 @@ export default function SOSButton() {
                 onClick={handleSOS}
                 disabled={sending || !message.trim()}
                 className="w-full py-3 rounded-xl bg-red-600 hover:bg-red-500 disabled:opacity-60 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-red-500/30 transition-colors"
-                style={{ animation: sending ? 'sosFlash 0.5s ease-in-out infinite' : 'none' }}
               >
                 <Send className="w-4 h-4" />
                 {countdown > 0 ? `Sending in ${countdown}…` : sending ? 'Broadcasting…' : 'SEND SOS ALERT'}
